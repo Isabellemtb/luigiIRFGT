@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Titre du film -->
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Titre du film"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Année -->
+        <TextView
+            android:id="@+id/textViewYear"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Année :"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Durée -->
+        <TextView
+            android:id="@+id/textViewLength"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Durée :"
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Langue -->
+        <TextView
+            android:id="@+id/textViewLanguage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Langue : Non disponible"
+            android:textSize="16sp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Description titre -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description :"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/textViewDescription"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description du film"
+            android:textSize="16sp"
+            android:lineSpacingExtra="4dp"
+            android:layout_marginBottom="16dp"/>
+
+        <!-- Réalisateurs -->
+        <TextView
+            android:id="@+id/textViewDirectors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Réalisateurs : "
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Acteurs -->
+        <TextView
+            android:id="@+id/textViewActors"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Acteurs : "
+            android:textSize="16sp"
+            android:layout_marginBottom="8dp"/>
+
+        <!-- Catégories -->
+        <TextView
+            android:id="@+id/textViewCategories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Catégories : "
+            android:textSize="16sp"
+            android:layout_marginBottom="24dp"/>
+
+        <!-- Bouton Ajouter au panier -->
+        <Button
+            android:id="@+id/buttonAddToCart"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Ajouter au panier"
+            android:textSize="16sp"
+            android:layout_marginTop="16dp"/>
+
+    </LinearLayout>
+
+</ScrollView>

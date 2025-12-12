@@ -5,18 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:background="#EDCFB4">
 
-    <!-- Titre -->
-    <TextView
+    <!-- En-tête avec fond marron -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Mon Panier"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginBottom="16dp"/>
+        android:background="#8B5E3C"
+        android:elevation="4dp"
+        android:orientation="vertical"
+        android:padding="20dp">
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Mon Panier"
+            android:textColor="#FFFFFF"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
     <!-- Liste des films du panier -->
     <ListView
@@ -24,31 +33,40 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:layout_marginBottom="16dp"/>
+        android:padding="8dp"
+        android:divider="#E0E0E0"
+        android:dividerHeight="1dp"/>
 
     <!-- Boutons en bas -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:padding="16dp">
 
         <Button
             android:id="@+id/buttonViderPanier"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_weight="1"
             android:text="Vider le panier"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
             android:layout_marginEnd="8dp"
-            android:backgroundTint="#FF5722"/>
+            android:backgroundTint="#D32F2F"/>
 
         <Button
             android:id="@+id/buttonValiderPanier"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="60dp"
             android:layout_weight="1"
-            android:text="Valider la commande"
+            android:text="Valider"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
             android:layout_marginStart="8dp"
-            android:backgroundTint="#4CAF50"/>
+            android:backgroundTint="#8B5E3C"/>
 
     </LinearLayout>
 

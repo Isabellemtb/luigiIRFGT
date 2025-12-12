@@ -164,7 +164,7 @@ public class DetailfilmActivity extends AppCompatActivity {
             textViewDescription.setText(film.getDescription());
             textViewYear.setText("Année : " + film.getReleaseYear());
             textViewLength.setText("Durée : " + film.getLength() + " minutes");
-            textViewLanguage.setText("Langue : Non disponible");
+            textViewLanguage.setText("Langue : " + getLanguageName(film.getOriginalLanguageId()));
 
             // Afficher les réalisateurs
             if (film.getDirectors() != null && !film.getDirectors().isEmpty()) {
@@ -225,6 +225,23 @@ public class DetailfilmActivity extends AppCompatActivity {
             Log.e("mydebug", "ERREUR parsing JSON : " + e.toString());
             e.printStackTrace();
             runOnUiThread(() -> Toast.makeText(this, "Erreur lors du chargement du film", Toast.LENGTH_LONG).show());
+        }
+    }
+
+    /**
+     * Convertit l'ID de la langue en nom de langue
+     */
+    private String getLanguageName(Integer languageId) {
+        if (languageId == null) return "Non disponible";
+
+        switch (languageId) {
+            case 1: return "English";
+            case 2: return "Italian";
+            case 3: return "Japanese";
+            case 4: return "Mandarin";
+            case 5: return "French";
+            case 6: return "German";
+            default: return "Langue ID: " + languageId;
         }
     }
 }

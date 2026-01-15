@@ -19,7 +19,7 @@ import java.net.URL;
 public class ListefilmsActivity extends AppCompatActivity {
 
     private ListView listViewFilms;
-    private ArrayList<Film> filmsList;  // Pour avoir l'ID
+    private ArrayList<Film> filmsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,20 +28,18 @@ public class ListefilmsActivity extends AppCompatActivity {
 
         listViewFilms = findViewById(R.id.listViewFilms);
         try {
-            URL url = new URL("http://10.0.2.2:8180/films"); // URL l'API
-            new ListFilmsTask(this).execute(url);  // Lancement de la tâche asynchrone
+            URL url = new URL(UrlManager.getURLConnexion() + "/films");
+            new ListFilmsTask(this).execute(url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
 
-    // Cette méthode sera appelée par ListFilmsTask après la récupération des données JSON
     public void mettreAJourActivityApresAppelRest(String json) {
         try {
             Gson gson = new Gson();
             Type listType = new TypeToken<ArrayList<Film>>() {}.getType();
             filmsList = gson.fromJson(json, listType);
-
 
             ArrayList<String> titres = new ArrayList<>();
             for (Film f : filmsList) {
@@ -55,13 +53,9 @@ public class ListefilmsActivity extends AppCompatActivity {
             );
             listViewFilms.setAdapter(adapter);
 
-            // Listener pour détecter les clics sur les films
             listViewFilms.setOnItemClickListener((parent, view, position, id) -> {
-                // Récupérer seulement l'ID du film cliqué
                 Film filmSelectionne = filmsList.get(position);
                 int filmId = filmSelectionne.getFilmId();
-
-                // Ouvrir la page détail en passant juste l'ID
                 ouvrirDetailFilm(filmId);
             });
 
@@ -70,10 +64,9 @@ public class ListefilmsActivity extends AppCompatActivity {
         }
     }
 
-    // Méthode pour ouvrir la page détail d'un film
     private void ouvrirDetailFilm(int filmId) {
         Intent intent = new Intent(this, DetailfilmActivity.class);
-        intent.putExtra("film_id", filmId);  // Passer juste l'ID
+        intent.putExtra("film_id", filmId);
         startActivity(intent);
     }
 

@@ -34,7 +34,7 @@ public class ConnexionTask extends AsyncTask<String, Integer, String> {
         String password = params[1];
 
         try {
-            URL url = new URL("http://10.0.2.2:8180/customers/verify");
+            URL url = new URL(UrlManager.getURLConnexion() + "/customers/verify");
             return appelerServiceRestHttp(url, email, password);
         } catch (Exception e) {
             Log.e("mydebug", "Erreur connexion: " + e.toString());

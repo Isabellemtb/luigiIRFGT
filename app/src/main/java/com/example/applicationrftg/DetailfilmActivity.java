@@ -70,7 +70,7 @@ public class DetailfilmActivity extends AppCompatActivity {
             if (filmId != -1) {
                 // Faire un appel API pour récupérer le film
                 try {
-                    URL url = new URL("http://10.0.2.2:8180/films/" + filmId);
+                    URL url = new URL(UrlManager.getURLConnexion() + "/films/" + filmId);
                     new GetFilmByIdTask(this).execute(url);
                 } catch (MalformedURLException e) {
                     e.printStackTrace();

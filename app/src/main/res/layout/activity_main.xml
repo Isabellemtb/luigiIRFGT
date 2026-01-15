@@ -7,33 +7,37 @@
     android:background="#EDCFB4"
     tools:context=".MainActivity">
 
-    <!-- Logo / Émoji -->
-    <TextView
-        android:id="@+id/textViewLogo"
+    <!-- Logo + Titre sur la même ligne -->
+    <LinearLayout
+        android:id="@+id/headerLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="🎬"
-        android:textSize="60sp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewTitle"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <!-- Titre CINÉMA -->
-    <TextView
-        android:id="@+id/textViewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="RFTG"
-        android:textSize="32sp"
-        android:textStyle="bold"
-        android:textColor="#4E3016"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
         app:layout_constraintBottom_toTopOf="@+id/textView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLogo" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <TextView
+            android:id="@+id/textViewLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎬"
+            android:textSize="50sp" />
+
+        <TextView
+            android:id="@+id/textViewTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:text="RFTG"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="#4E3016" />
+
+    </LinearLayout>
 
     <!-- Sous-titre Connexion -->
     <TextView
@@ -47,7 +51,7 @@
         app:layout_constraintBottom_toTopOf="@+id/editTextLogin"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewTitle" />
+        app:layout_constraintTop_toBottomOf="@+id/headerLayout" />
 
     <!-- Champ Identifiant -->
     <EditText
@@ -99,6 +103,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextPassword" />
 
+    <!-- Label serveur -->
+    <TextView
+        android:id="@+id/textViewServeur"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="24dp"
+        android:text="Serveur"
+        android:textSize="16sp"
+        android:textColor="#4E3016"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button2" />
 
+    <!-- Liste déroulante serveur -->
+    <!-- Zone de texte URL -->
+    <EditText
+        android:id="@+id/editTextURL"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:hint="URL du serveur"
+        android:inputType="textUri"
+        android:padding="16dp"
+        android:background="@android:drawable/edit_text"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewServeur" />
+
+    <!-- Menu déroulant URLs -->
+    <Spinner
+        android:id="@+id/spinnerURLs"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="32dp"
+        android:background="@android:drawable/btn_dropdown"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextURL" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

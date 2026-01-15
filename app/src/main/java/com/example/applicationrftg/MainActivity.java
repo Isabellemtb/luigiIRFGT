@@ -4,20 +4,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 import android.util.Log;
 import org.json.JSONObject;
 
-/**
- * Activity principale - Écran de connexion
- */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private EditText editTextLogin;
     private EditText editTextPassword;
+    private EditText editTextURL;
     private Button buttonLogin;
+    private String[] listeURLs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +28,17 @@ public class MainActivity extends AppCompatActivity {
 
         editTextLogin = findViewById(R.id.editTextLogin);
         editTextPassword = findViewById(R.id.editTextPassword);
+        editTextURL = findViewById(R.id.editTextURL);
         buttonLogin = findViewById(R.id.button2);
+
+        // Configuration du Spinner
+        listeURLs = getResources().getStringArray(R.array.listeURLs);
+        Spinner spinnerURLs = findViewById(R.id.spinnerURLs);
+        spinnerURLs.setOnItemSelectedListener(this);
+        ArrayAdapter<CharSequence> adapterListeURLs = ArrayAdapter.createFromResource(
+                this, R.array.listeURLs, android.R.layout.simple_spinner_item);
+        adapterListeURLs.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerURLs.setAdapter(adapterListeURLs);
 
         buttonLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,14 +48,26 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * Méthode appelée lors du clic sur "Se connecter"
-     */
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        editTextURL.setText(listeURLs[position]);
+        UrlManager.setURLConnexion(listeURLs[position]);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+    }
+
     private void seConnecter() {
         String email = editTextLogin.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        // Vérifier que les champs ne sont pas vides
+        // Sauvegarder l'URL saisie manuellement
+        String urlSaisie = editTextURL.getText().toString().trim();
+        if (!urlSaisie.isEmpty()) {
+            UrlManager.setURLConnexion(urlSaisie);
+        }
+
         if (email.isEmpty()) {
             Toast.makeText(this, "Veuillez saisir un email", Toast.LENGTH_SHORT).show();
             return;
@@ -54,35 +78,23 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        // Lancer l'AsyncTask pour vérifier la connexion
-        Log.d("mydebug", "Tentative de connexion: " + email);
+        Log.d("mydebug", "Connexion sur: " + UrlManager.getURLConnexion());
         new ConnexionTask(this).execute(email, password);
     }
 
-    /**
-     * Méthode appelée par ConnexionTask après vérification
-     */
     public void onConnexionTerminee(String resultat) {
         Log.d("mydebug", "Résultat connexion JSON: " + resultat);
 
         try {
-            // Parser le JSON de retour
             JSONObject jsonResponse = new JSONObject(resultat);
             int customerId = jsonResponse.getInt("customerId");
 
-            Log.d("mydebug", "Customer ID reçu: " + customerId);
-
             if (customerId > 0) {
-                // Connexion réussie
                 Toast.makeText(this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
-
-                // Ouvrir la liste des films
                 ouvrirPage(null);
-
             } else {
-                // Identifiants incorrects (customerId = -1)
                 Toast.makeText(this, "Email ou mot de passe incorrect", Toast.LENGTH_LONG).show();
-                editTextPassword.setText(""); // Vider le mot de passe
+                editTextPassword.setText("");
             }
 
         } catch (Exception e) {
@@ -91,9 +103,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Méthode pour ouvrir la liste de films
-     */
     public void ouvrirPage(View view) {
         Intent intent = new Intent(MainActivity.this, ListefilmsActivity.class);
         startActivity(intent);

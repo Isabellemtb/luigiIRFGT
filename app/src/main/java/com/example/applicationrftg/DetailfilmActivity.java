@@ -83,44 +83,51 @@ public class DetailfilmActivity extends AppCompatActivity {
     }
 
     /**
-     * Ajoute le film au panier (SQLite)
+     * Ajoute le film au panier via l'API
      */
     private void ajouterAuPanier() {
-        SQLiteDatabase database = null;
-        PanierDatabaseHelper dbHelper = null;
+        // TODO: récupérer le vrai customerId stocké à la connexion
+        int customerId = 1;
 
-        try {
-            // Créer/ouvrir la base de données
-            dbHelper = new PanierDatabaseHelper(this);
-            database = dbHelper.getWritableDatabase();
+        // Appeler l'API pour créer le Rental
+        new AjouterAuPanierTask(this).execute(customerId, filmId);
+    }
 
-            // Préparer les valeurs à insérer
-            ContentValues values = new ContentValues();
-            values.put(PanierDatabaseHelper.COLUMN_FILM_ID, filmId);
-            values.put(PanierDatabaseHelper.COLUMN_TITLE, filmTitle);
-            values.put(PanierDatabaseHelper.COLUMN_YEAR, filmYear);
-            values.put(PanierDatabaseHelper.COLUMN_LENGTH, filmLength);
+    /**
+     * Callback appelé après l'ajout au panier via API
+     */
+    public void onFilmAjouteAuPanier(String resultat) {
+        if (resultat.equals("OK")) {
+            // Ajouter aussi dans SQLite local
+            SQLiteDatabase database = null;
+            PanierDatabaseHelper dbHelper = null;
 
-            // Insérer dans la base de données
-            long insertId = database.insert(PanierDatabaseHelper.TABLE_PANIER, null, values);
+            try {
+                dbHelper = new PanierDatabaseHelper(this);
+                database = dbHelper.getWritableDatabase();
 
-            if (insertId != -1) {
-                Log.d("mydebug", "Film ajouté au panier, ID: " + insertId);
-                Toast.makeText(this, "Film ajouté au panier !", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Erreur lors de l'ajout au panier", Toast.LENGTH_SHORT).show();
+                ContentValues values = new ContentValues();
+                values.put(PanierDatabaseHelper.COLUMN_FILM_ID, filmId);
+                values.put(PanierDatabaseHelper.COLUMN_TITLE, filmTitle);
+                values.put(PanierDatabaseHelper.COLUMN_YEAR, filmYear);
+                values.put(PanierDatabaseHelper.COLUMN_LENGTH, filmLength);
+
+                database.insert(PanierDatabaseHelper.TABLE_PANIER, null, values);
+                Log.d("mydebug", "Film ajouté au panier local");
+
+            } catch (Exception e) {
+                Log.e("mydebug", "Erreur SQLite: " + e.toString());
+            } finally {
+                if (dbHelper != null) {
+                    dbHelper.close();
+                }
             }
 
-        } catch (SQLException sqle) {
-            Log.e("mydebug", "SQLException: " + sqle.toString());
-            Toast.makeText(this, "Erreur base de données", Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-            Log.e("mydebug", "Exception: " + e.toString());
+            Toast.makeText(this, "Film ajouté au panier !", Toast.LENGTH_SHORT).show();
+        } else if (resultat.equals("INDISPONIBLE")) {
+            Toast.makeText(this, "Aucun exemplaire disponible", Toast.LENGTH_SHORT).show();
+        } else {
             Toast.makeText(this, "Erreur lors de l'ajout au panier", Toast.LENGTH_SHORT).show();
-        } finally {
-            if (dbHelper != null) {
-                dbHelper.close();
-            }
         }
     }
 

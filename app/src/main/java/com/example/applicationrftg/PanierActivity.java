@@ -135,6 +135,11 @@ public class PanierActivity extends AppCompatActivity {
             );
             listViewPanier.setAdapter(adapter);
 
+            // Vérifier la disponibilité de chaque film
+            if (!filmsIds.isEmpty()) {
+                verifierDisponibilites();
+            }
+
             Log.d("mydebug", "Panier chargé: " + filmsIds.size() + " film(s)");
 
         } catch (Exception e) {
@@ -148,6 +153,37 @@ public class PanierActivity extends AppCompatActivity {
             if (dbHelper != null) {
                 dbHelper.close();
             }
+        }
+    }
+
+    /**
+     * Vérifie la disponibilité de chaque film du panier
+     */
+    private void verifierDisponibilites() {
+        for (int i = 0; i < filmsIds.size(); i++) {
+            new CheckDisponibiliteTask(this, i).execute(filmsIds.get(i));
+        }
+    }
+
+    /**
+     * Callback appelé quand la disponibilité d'un film est vérifiée
+     */
+    public void onDisponibiliteVerifiee(int position, boolean disponible) {
+        if (position < filmsTitres.size() && !filmsTitres.get(position).equals("Panier vide")) {
+            String titre = filmsTitres.get(position);
+            // Enlever l'ancien statut s'il existe
+            if (titre.contains(" - Disponible") || titre.contains(" - Indisponible")) {
+                titre = titre.replace(" - Disponible", "").replace(" - Indisponible", "");
+            }
+            // Ajouter le nouveau statut
+            if (disponible) {
+                filmsTitres.set(position, titre + " - Disponible");
+            } else {
+                filmsTitres.set(position, titre + " - Indisponible");
+            }
+
+            // Rafraîchir la ListView
+            ((ArrayAdapter) listViewPanier.getAdapter()).notifyDataSetChanged();
         }
     }
 
@@ -239,17 +275,11 @@ public class PanierActivity extends AppCompatActivity {
 
         Log.d("mydebug", "Validation du panier avec " + filmsIds.size() + " film(s)");
 
-        // Lancer l'AsyncTask pour valider via l'API
-        // TODO: A décommenter quand l'API sera prête
-        // new ValiderPanierTask(this).execute(filmsIds);
+        // Récupérer le customerId (TODO: récupérer le vrai customerId stocké à la connexion)
+        int customerId = 1;
 
-        // Pour l'instant, juste un message
-        Toast.makeText(this,
-                "Commande de " + filmsIds.size() + " film(s) validée !\n(API pas encore implémentée)",
-                Toast.LENGTH_LONG).show();
-
-        // Vider le panier après validation
-        viderPanier();
+        // Appeler l'API pour valider
+        new ValiderPanierTask(this).execute(customerId);
     }
 
     /**

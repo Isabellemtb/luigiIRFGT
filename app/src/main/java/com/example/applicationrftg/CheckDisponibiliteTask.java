@@ -3,54 +3,53 @@ package com.example.applicationrftg;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import org.json.JSONObject;
-
 import java.io.BufferedInputStream;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * AsyncTask pour valider le panier via l'API
- * Appelle POST /cart/checkout
+ * AsyncTask pour vérifier la disponibilité d'un film
+ * Appelle GET /cart/available/{filmId}
  */
 @SuppressWarnings("deprecation")
-public class ValiderPanierTask extends AsyncTask<Integer, Integer, String> {
+public class CheckDisponibiliteTask extends AsyncTask<Integer, Integer, Boolean> {
 
     private volatile PanierActivity screen;
+    private int position;
 
-    public ValiderPanierTask(PanierActivity s) {
+    public CheckDisponibiliteTask(PanierActivity s, int position) {
         this.screen = s;
+        this.position = position;
     }
 
     @Override
     protected void onPreExecute() {
-        Log.d("mydebug", "Validation du panier...");
+        Log.d("mydebug", "Vérification disponibilité...");
     }
 
     @Override
-    protected String doInBackground(Integer... params) {
-        int customerId = params[0];
+    protected Boolean doInBackground(Integer... params) {
+        int filmId = params[0];
 
         try {
-            URL url = new URL(UrlManager.getURLConnexion() + "/cart/checkout");
-            return appelerServiceRestHttp(url, customerId);
+            URL url = new URL(UrlManager.getURLConnexion() + "/cart/available/" + filmId);
+            return appelerServiceRestHttp(url);
         } catch (Exception e) {
-            Log.e("mydebug", "Erreur validation: " + e.toString());
-            return "ERREUR";
+            Log.e("mydebug", "Erreur disponibilité: " + e.toString());
+            return false;
         }
     }
 
     @Override
-    protected void onPostExecute(String resultat) {
-        screen.onPanierValide(resultat);
+    protected void onPostExecute(Boolean disponible) {
+        screen.onDisponibiliteVerifiee(position, disponible);
     }
 
     /**
-     * Appel HTTP POST pour valider le panier
+     * Appel HTTP GET pour vérifier la disponibilité
      */
-    private String appelerServiceRestHttp(URL urlAAppeler, int customerId) {
+    private Boolean appelerServiceRestHttp(URL urlAAppeler) {
         HttpURLConnection urlConnection = null;
         String sResultatAppel = "";
         String jwt = "eyJhbGciOiJIUzI1NiJ9.e30.jg2m4pLbAlZv1h5uPQ6fU38X23g65eXMX8q-SXuIPDg";
@@ -59,23 +58,10 @@ public class ValiderPanierTask extends AsyncTask<Integer, Integer, String> {
             Log.d("mydebug", "URL appelée : " + urlAAppeler.toString());
 
             urlConnection = (HttpURLConnection) urlAAppeler.openConnection();
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setRequestProperty("Content-Type", "application/json");
+            urlConnection.setRequestMethod("GET");
             urlConnection.setRequestProperty("Accept", "application/json");
             urlConnection.setRequestProperty("Authorization", "Bearer " + jwt);
             urlConnection.setRequestProperty("User-Agent", System.getProperty("http.agent"));
-            urlConnection.setDoOutput(true);
-
-            // Créer le JSON avec customerId
-            JSONObject jsonParam = new JSONObject();
-            jsonParam.put("customerId", customerId);
-
-            Log.d("mydebug", "JSON envoyé : " + jsonParam.toString());
-
-            // Envoyer le JSON
-            OutputStream os = urlConnection.getOutputStream();
-            os.write(jsonParam.toString().getBytes("UTF-8"));
-            os.close();
 
             int responseCode = urlConnection.getResponseCode();
             Log.d("mydebug", "Response code : " + responseCode);
@@ -90,7 +76,9 @@ public class ValiderPanierTask extends AsyncTask<Integer, Integer, String> {
                 in.close();
 
                 Log.d("mydebug", "Réponse reçue : " + sResultatAppel);
-                return "OK";
+
+                // Si le tableau est vide [] = indisponible, sinon disponible
+                return !sResultatAppel.trim().equals("[]");
             }
 
         } catch (Exception e) {
@@ -100,6 +88,6 @@ public class ValiderPanierTask extends AsyncTask<Integer, Integer, String> {
                 urlConnection.disconnect();
             }
         }
-        return "ERREUR";
+        return false;
     }
 }

@@ -12,45 +12,46 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * AsyncTask pour valider le panier via l'API
- * Appelle POST /cart/checkout
+ * AsyncTask pour ajouter un film au panier via l'API
+ * Appelle POST /cart/add et crée un Rental avec status = 3
  */
 @SuppressWarnings("deprecation")
-public class ValiderPanierTask extends AsyncTask<Integer, Integer, String> {
+public class AjouterAuPanierTask extends AsyncTask<Integer, Integer, String> {
 
-    private volatile PanierActivity screen;
+    private volatile DetailfilmActivity screen;
 
-    public ValiderPanierTask(PanierActivity s) {
+    public AjouterAuPanierTask(DetailfilmActivity s) {
         this.screen = s;
     }
 
     @Override
     protected void onPreExecute() {
-        Log.d("mydebug", "Validation du panier...");
+        Log.d("mydebug", "Ajout au panier via API...");
     }
 
     @Override
     protected String doInBackground(Integer... params) {
         int customerId = params[0];
+        int filmId = params[1];
 
         try {
-            URL url = new URL(UrlManager.getURLConnexion() + "/cart/checkout");
-            return appelerServiceRestHttp(url, customerId);
+            URL url = new URL(UrlManager.getURLConnexion() + "/cart/add");
+            return appelerServiceRestHttp(url, customerId, filmId);
         } catch (Exception e) {
-            Log.e("mydebug", "Erreur validation: " + e.toString());
+            Log.e("mydebug", "Erreur ajout panier: " + e.toString());
             return "ERREUR";
         }
     }
 
     @Override
     protected void onPostExecute(String resultat) {
-        screen.onPanierValide(resultat);
+        screen.onFilmAjouteAuPanier(resultat);
     }
 
     /**
-     * Appel HTTP POST pour valider le panier
+     * Appel HTTP POST pour ajouter au panier
      */
-    private String appelerServiceRestHttp(URL urlAAppeler, int customerId) {
+    private String appelerServiceRestHttp(URL urlAAppeler, int customerId, int filmId) {
         HttpURLConnection urlConnection = null;
         String sResultatAppel = "";
         String jwt = "eyJhbGciOiJIUzI1NiJ9.e30.jg2m4pLbAlZv1h5uPQ6fU38X23g65eXMX8q-SXuIPDg";
@@ -66,9 +67,10 @@ public class ValiderPanierTask extends AsyncTask<Integer, Integer, String> {
             urlConnection.setRequestProperty("User-Agent", System.getProperty("http.agent"));
             urlConnection.setDoOutput(true);
 
-            // Créer le JSON avec customerId
+            // Créer le JSON avec customerId et filmId
             JSONObject jsonParam = new JSONObject();
             jsonParam.put("customerId", customerId);
+            jsonParam.put("filmId", filmId);
 
             Log.d("mydebug", "JSON envoyé : " + jsonParam.toString());
 
@@ -91,6 +93,8 @@ public class ValiderPanierTask extends AsyncTask<Integer, Integer, String> {
 
                 Log.d("mydebug", "Réponse reçue : " + sResultatAppel);
                 return "OK";
+            } else if (responseCode == 404) {
+                return "INDISPONIBLE";
             }
 
         } catch (Exception e) {

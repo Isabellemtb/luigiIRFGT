@@ -1,4 +1,4 @@
-package com.example.applicationrftg;
+package com.example.applicationrftgich;
 
 import org.junit.Test;
 

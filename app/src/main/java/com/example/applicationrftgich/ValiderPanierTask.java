@@ -1,4 +1,4 @@
-package com.example.applicationrftg;
+package com.example.applicationrftgich;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -12,49 +12,48 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 /**
- * AsyncTask pour ajouter un film au panier via l'API
- * Appelle POST /cart/add et crée un Rental avec status = 3
+ * AsyncTask pour valider le panier via l'API
+ * Appelle POST /cart/checkout
  */
 @SuppressWarnings("deprecation")
-public class AjouterAuPanierTask extends AsyncTask<Integer, Integer, String> {
+public class ValiderPanierTask extends AsyncTask<Integer, Integer, String> {
 
-    private volatile DetailfilmActivity screen;
+    private volatile PanierActivity screen;
 
-    public AjouterAuPanierTask(DetailfilmActivity s) {
+    public ValiderPanierTask(PanierActivity s) {
         this.screen = s;
     }
 
     @Override
     protected void onPreExecute() {
-        Log.d("mydebug", "Ajout au panier via API...");
+        Log.d("mydebug", "Validation du panier...");
     }
 
     @Override
     protected String doInBackground(Integer... params) {
         int customerId = params[0];
-        int filmId = params[1];
 
         try {
-            URL url = new URL(UrlManager.getURLConnexion() + "/cart/add");
-            return appelerServiceRestHttp(url, customerId, filmId);
+            URL url = new URL(UrlManager.getURLConnexion() + "/cart/checkout");
+            return appelerServiceRestHttp(url, customerId);
         } catch (Exception e) {
-            Log.e("mydebug", "Erreur ajout panier: " + e.toString());
+            Log.e("mydebug", "Erreur validation: " + e.toString());
             return "ERREUR";
         }
     }
 
     @Override
     protected void onPostExecute(String resultat) {
-        screen.onFilmAjouteAuPanier(resultat);
+        screen.onPanierValide(resultat);
     }
 
     /**
-     * Appel HTTP POST pour ajouter au panier
+     * Appel HTTP POST pour valider le panier
      */
-    private String appelerServiceRestHttp(URL urlAAppeler, int customerId, int filmId) {
+    private String appelerServiceRestHttp(URL urlAAppeler, int customerId) {
         HttpURLConnection urlConnection = null;
         String sResultatAppel = "";
-        String jwt = "eyJhbGciOiJIUzI1NiJ9.e30.jg2m4pLbAlZv1h5uPQ6fU38X23g65eXMX8q-SXuIPDg";
+        String jwt = screen.getString(R.string.jwt_token);
 
         try {
             Log.d("mydebug", "URL appelée : " + urlAAppeler.toString());
@@ -67,10 +66,9 @@ public class AjouterAuPanierTask extends AsyncTask<Integer, Integer, String> {
             urlConnection.setRequestProperty("User-Agent", System.getProperty("http.agent"));
             urlConnection.setDoOutput(true);
 
-            // Créer le JSON avec customerId et filmId
+            // Créer le JSON avec customerId
             JSONObject jsonParam = new JSONObject();
             jsonParam.put("customerId", customerId);
-            jsonParam.put("filmId", filmId);
 
             Log.d("mydebug", "JSON envoyé : " + jsonParam.toString());
 
@@ -93,8 +91,6 @@ public class AjouterAuPanierTask extends AsyncTask<Integer, Integer, String> {
 
                 Log.d("mydebug", "Réponse reçue : " + sResultatAppel);
                 return "OK";
-            } else if (responseCode == 404) {
-                return "INDISPONIBLE";
             }
 
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package com.example.applicationrftg;
+package com.example.applicationrftgich;
 
 /* Liste déroulante serveur */
 public class UrlManager {

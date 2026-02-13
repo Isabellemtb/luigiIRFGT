@@ -1,4 +1,4 @@
-package com.example.applicationrftg;
+package com.example.applicationrftgich;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -46,6 +46,15 @@ public class PanierActivity extends AppCompatActivity {
 
         // Charger les films du panier depuis SQLite
         chargerPanier();
+        // Clic sur un film pour le supprimer avec confirmation
+        listViewPanier.setOnItemClickListener((parent, view, position, id) -> {
+            new android.app.AlertDialog.Builder(this)
+                    .setTitle("Supprimer")
+                    .setMessage("Retirer ce film du panier ?")
+                    .setPositiveButton("Oui", (dialog, which) -> supprimerFilmDuPanier(position))
+                    .setNegativeButton("Non", null)
+                    .show();
+        });
 
         // Listener pour valider le panier
         buttonValiderPanier.setOnClickListener(new View.OnClickListener() {

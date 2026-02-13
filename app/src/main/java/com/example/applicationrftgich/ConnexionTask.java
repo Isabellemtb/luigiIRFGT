@@ -1,4 +1,4 @@
-package com.example.applicationrftg;
+package com.example.applicationrftgich;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -54,7 +54,7 @@ public class ConnexionTask extends AsyncTask<String, Integer, String> {
         HttpURLConnection urlConnection = null;
         int responseCode = -1;
         String sResultatAppel = "";
-        String jwt = "eyJhbGciOiJIUzI1NiJ9.e30.jg2m4pLbAlZv1h5uPQ6fU38X23g65eXMX8q-SXuIPDg";
+        String jwt = screen.getString(R.string.jwt_token);
 
         try {
             Log.d("mydebug", "URL appelée : " + urlAAppeler.toString());

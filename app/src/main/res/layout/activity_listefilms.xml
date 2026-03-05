@@ -8,23 +8,63 @@
     android:background="#EDCFB4">
 
     <!-- En-tête avec fond -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="#8B5E3C"
         android:elevation="4dp"
-        android:orientation="vertical"
         android:padding="20dp">
 
         <TextView
             android:id="@+id/Listefilm"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
+            android:layout_centerInParent="true"
             android:text="Catalogue de Films"
             android:textColor="#FFFFFF"
             android:textSize="26sp"
             android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/buttonFermer"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:text="✕"
+            android:textSize="16sp"
+            android:backgroundTint="#EDCFB4"
+            android:textColor="#8B5E3C"
+            android:padding="0dp" />
+
+    </RelativeLayout>
+
+    <!-- Spinner de chargement -->
+    <LinearLayout
+        android:id="@+id/layoutChargement"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:visibility="visible">
+
+        <ProgressBar
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:indeterminate="true"
+            android:indeterminateTint="#8B5E3C"
+            android:layout_marginTop="48dp"
+            android:layout_marginBottom="24dp" />
+
+        <TextView
+            android:id="@+id/textViewChargement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🎬 Chargement des films"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#4E3016" />
 
     </LinearLayout>
 
@@ -36,7 +76,8 @@
         android:layout_weight="1"
         android:padding="8dp"
         android:divider="#E0E0E0"
-        android:dividerHeight="1dp"/>
+        android:dividerHeight="1dp"
+        android:visibility="gone"/>
 
     <!-- Bouton Panier en bas -->
     <Button

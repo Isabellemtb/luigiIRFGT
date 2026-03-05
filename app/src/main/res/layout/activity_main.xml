@@ -1,118 +1,124 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#EDCFB4"
-    android:fillViewport="true"
     tools:context=".MainActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="32dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
-        <!-- Logo + Titre -->
         <LinearLayout
-            android:id="@+id/headerLayout"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:padding="32dp">
 
-            <TextView
-                android:id="@+id/textViewLogo"
+            <!-- Logo + Titre -->
+            <LinearLayout
+                android:id="@+id/headerLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="🎬"
-                android:textSize="50sp" />
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginBottom="8dp">
 
+                <TextView
+                    android:id="@+id/textViewLogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🎬"
+                    android:textSize="50sp" />
+
+                <TextView
+                    android:id="@+id/textViewTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:text="RFTG"
+                    android:textSize="32sp"
+                    android:textStyle="bold"
+                    android:textColor="#4E3016" />
+            </LinearLayout>
+
+            <!-- Sous-titre -->
             <TextView
-                android:id="@+id/textViewTitle"
+                android:id="@+id/textView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:text="RFTG"
-                android:textSize="32sp"
+                android:layout_marginBottom="48dp"
+                android:text="Connexion"
+                android:textSize="18sp"
+                android:textColor="#757575" />
+
+            <!-- Champ Email -->
+            <EditText
+                android:id="@+id/editTextLogin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:hint="Email"
+                android:inputType="text"
+                android:padding="16dp"
+                android:background="@android:drawable/edit_text" />
+
+            <!-- Champ Mot de passe -->
+            <EditText
+                android:id="@+id/editTextPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="32dp"
+                android:hint="Mot de passe"
+                android:inputType="textPassword"
+                android:padding="16dp"
+                android:background="@android:drawable/edit_text" />
+
+            <!-- Bouton Se connecter -->
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_marginBottom="24dp"
+                android:text="SE CONNECTER"
+                android:textSize="16sp"
                 android:textStyle="bold"
-                android:textColor="#4E3016" />
+                android:backgroundTint="#8B5E3C" />
+
+            <!-- Label serveur -->
+            <TextView
+                android:id="@+id/textViewServeur"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Serveur"
+                android:textSize="16sp"
+                android:textColor="#4E3016"
+                android:textStyle="bold" />
+
+            <!-- Zone de texte URL -->
+            <EditText
+                android:id="@+id/editTextURL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:hint="URL du serveur"
+                android:inputType="textUri"
+                android:padding="16dp"
+                android:background="@android:drawable/edit_text" />
+
+            <!-- Menu déroulant URLs -->
+            <Spinner
+                android:id="@+id/spinnerURLs"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:background="@android:drawable/btn_dropdown" />
+
         </LinearLayout>
 
-        <!-- Sous-titre -->
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="48dp"
-            android:text="Connexion"
-            android:textSize="18sp"
-            android:textColor="#757575" />
+    </ScrollView>
 
-        <!-- Champ Email -->
-        <EditText
-            android:id="@+id/editTextLogin"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            android:hint="Email"
-            android:inputType="text"
-            android:padding="16dp"
-            android:background="@android:drawable/edit_text" />
-
-        <!-- Champ Mot de passe -->
-        <EditText
-            android:id="@+id/editTextPassword"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="32dp"
-            android:hint="Mot de passe"
-            android:inputType="textPassword"
-            android:padding="16dp"
-            android:background="@android:drawable/edit_text" />
-
-        <!-- Bouton Se connecter -->
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginBottom="24dp"
-            android:text="SE CONNECTER"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:backgroundTint="#8B5E3C" />
-
-        <!-- Label serveur -->
-        <TextView
-            android:id="@+id/textViewServeur"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Serveur"
-            android:textSize="16sp"
-            android:textColor="#4E3016"
-            android:textStyle="bold" />
-
-        <!-- Zone de texte URL -->
-        <EditText
-            android:id="@+id/editTextURL"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:hint="URL du serveur"
-            android:inputType="textUri"
-            android:padding="16dp"
-            android:background="@android:drawable/edit_text" />
-
-        <!-- Menu déroulant URLs -->
-        <Spinner
-            android:id="@+id/spinnerURLs"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@android:drawable/btn_dropdown" />
-
-    </LinearLayout>
-
-</ScrollView>
+</FrameLayout>

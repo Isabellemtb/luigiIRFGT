@@ -53,6 +53,9 @@ public class DetailfilmActivity extends AppCompatActivity {
         textViewCategories = findViewById(R.id.textViewCategories);
         buttonAddToCart = findViewById(R.id.buttonAddToCart);
 
+        findViewById(R.id.buttonFermer).setOnClickListener(v -> finishAffinity());
+
+
         // Listener sur le bouton "Ajouter au panier"
         buttonAddToCart.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +98,7 @@ public class DetailfilmActivity extends AppCompatActivity {
     /**
      * Callback appelé après l'ajout au panier via API
      */
-    public void onFilmAjouteAuPanier(String resultat) {
+    public void onFilmAjouteAuPanier(String resultat, int rentalId) {
         if (resultat.equals("OK")) {
             // Ajouter aussi dans SQLite local
             SQLiteDatabase database = null;
@@ -107,12 +110,13 @@ public class DetailfilmActivity extends AppCompatActivity {
 
                 ContentValues values = new ContentValues();
                 values.put(PanierDatabaseHelper.COLUMN_FILM_ID, filmId);
+                values.put(PanierDatabaseHelper.COLUMN_RENTAL_ID, rentalId);
                 values.put(PanierDatabaseHelper.COLUMN_TITLE, filmTitle);
                 values.put(PanierDatabaseHelper.COLUMN_YEAR, filmYear);
                 values.put(PanierDatabaseHelper.COLUMN_LENGTH, filmLength);
 
                 database.insert(PanierDatabaseHelper.TABLE_PANIER, null, values);
-                Log.d("mydebug", "Film ajouté au panier local");
+                Log.d("mydebug", "Film ajouté au panier local avec rentalId=" + rentalId);
 
             } catch (Exception e) {
                 Log.e("mydebug", "Erreur SQLite: " + e.toString());

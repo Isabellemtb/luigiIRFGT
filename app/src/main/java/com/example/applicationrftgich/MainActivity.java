@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         editTextURL = findViewById(R.id.editTextURL);
         buttonLogin = findViewById(R.id.button2);
 
+
         // Configuration du Spinner
         listeURLs = getResources().getStringArray(R.array.listeURLs);
         Spinner spinnerURLs = findViewById(R.id.spinnerURLs);
@@ -62,7 +63,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         String email = editTextLogin.getText().toString().trim();
         String password = editTextPassword.getText().toString().trim();
 
-        // Sauvegarder l'URL saisie manuellement
         String urlSaisie = editTextURL.getText().toString().trim();
         if (!urlSaisie.isEmpty()) {
             UrlManager.setURLConnexion(urlSaisie);

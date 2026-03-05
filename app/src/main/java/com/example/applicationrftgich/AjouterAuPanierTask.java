@@ -13,12 +13,13 @@ import java.net.URL;
 
 /**
  * AsyncTask pour ajouter un film au panier via l'API
- * Appelle POST /cart/add et crée un Rental avec status = 3
+ * Appelle POST /cart/add et crée un Rental avec status = 2
  */
 @SuppressWarnings("deprecation")
 public class AjouterAuPanierTask extends AsyncTask<Integer, Integer, String> {
 
     private volatile DetailfilmActivity screen;
+    private int rentalId = -1;
 
     public AjouterAuPanierTask(DetailfilmActivity s) {
         this.screen = s;
@@ -45,7 +46,7 @@ public class AjouterAuPanierTask extends AsyncTask<Integer, Integer, String> {
 
     @Override
     protected void onPostExecute(String resultat) {
-        screen.onFilmAjouteAuPanier(resultat);
+        screen.onFilmAjouteAuPanier(resultat, rentalId);
     }
 
     /**
@@ -92,6 +93,12 @@ public class AjouterAuPanierTask extends AsyncTask<Integer, Integer, String> {
                 in.close();
 
                 Log.d("mydebug", "Réponse reçue : " + sResultatAppel);
+
+                // Extraire le rentalId depuis { "rental": { "rentalId": ... } }
+                JSONObject jsonResponse = new JSONObject(sResultatAppel);
+                JSONObject rental = jsonResponse.getJSONObject("rental");
+                rentalId = rental.getInt("rentalId");
+
                 return "OK";
             } else if (responseCode == 404) {
                 return "INDISPONIBLE";

@@ -10,110 +10,136 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:padding="24dp"
-        android:gravity="center">
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:padding="24dp">
 
-        <!-- Partie gauche : Logo + Titre -->
+        <!-- Logo + Titre centré en haut -->
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/headerLayout"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:paddingEnd="24dp">
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="4dp">
 
             <TextView
                 android:id="@+id/textViewLogo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="🎬"
-                android:textSize="60sp" />
+                android:textSize="50sp" />
 
             <TextView
                 android:id="@+id/textViewTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="12dp"
                 android:text="RFTG"
-                android:textSize="32sp"
+                android:textSize="28sp"
                 android:textStyle="bold"
                 android:textColor="#4E3016" />
-
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="Connexion"
-                android:textSize="18sp"
-                android:textColor="#757575" />
         </LinearLayout>
 
-        <!-- Partie droite : Formulaire -->
-        <LinearLayout
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_marginBottom="16dp"
+            android:text="Connexion"
+            android:textSize="16sp"
+            android:textColor="#757575" />
 
-            <EditText
-                android:id="@+id/editTextLogin"
-                android:layout_width="match_parent"
+        <!-- Ligne : formulaire connexion (gauche) + formulaire serveur (droite) -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- Formulaire connexion (gauche) -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="12dp"
-                android:hint="Email"
-                android:inputType="text"
-                android:padding="14dp"
-                android:background="@android:drawable/edit_text" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingEnd="12dp">
 
-            <EditText
-                android:id="@+id/editTextPassword"
-                android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Identifiants"
+                    android:textSize="16sp"
+                    android:textColor="#4E3016"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/editTextLogin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:hint="Email"
+                    android:inputType="text"
+                    android:padding="14dp"
+                    android:background="@android:drawable/edit_text" />
+
+                <EditText
+                    android:id="@+id/editTextPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Mot de passe"
+                    android:inputType="textPassword"
+                    android:padding="14dp"
+                    android:background="@android:drawable/edit_text" />
+            </LinearLayout>
+
+            <!-- Formulaire serveur (droite) -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:hint="Mot de passe"
-                android:inputType="textPassword"
-                android:padding="14dp"
-                android:background="@android:drawable/edit_text" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="12dp">
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:layout_marginBottom="16dp"
-                android:text="SE CONNECTER"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:backgroundTint="#8B5E3C" />
+                <TextView
+                    android:id="@+id/textViewServeur"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:text="Serveur"
+                    android:textSize="16sp"
+                    android:textColor="#4E3016"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/textViewServeur"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="Serveur"
-                android:textSize="16sp"
-                android:textColor="#4E3016"
-                android:textStyle="bold" />
+                <EditText
+                    android:id="@+id/editTextURL"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="12dp"
+                    android:hint="URL du serveur"
+                    android:inputType="textUri"
+                    android:padding="14dp"
+                    android:background="@android:drawable/edit_text" />
 
-            <EditText
-                android:id="@+id/editTextURL"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:hint="URL du serveur"
-                android:inputType="textUri"
-                android:padding="14dp"
-                android:background="@android:drawable/edit_text" />
-
-            <Spinner
-                android:id="@+id/spinnerURLs"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:background="@android:drawable/btn_dropdown" />
+                <Spinner
+                    android:id="@+id/spinnerURLs"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@android:drawable/btn_dropdown" />
+            </LinearLayout>
 
         </LinearLayout>
+
+        <!-- Bouton connexion centré sous les deux formulaires -->
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:layout_marginTop="20dp"
+            android:text="SE CONNECTER"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:backgroundTint="#8B5E3C" />
 
     </LinearLayout>
 

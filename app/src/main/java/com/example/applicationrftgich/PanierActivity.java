@@ -28,6 +28,7 @@ public class PanierActivity extends AppCompatActivity {
     private ArrayList<String> filmsTitres;
     private ArrayList<Integer> filmsIds;
     private ArrayList<Integer> filmsPanierIds;  // IDs de la table panier (pour supprimer)
+    private ArrayList<Integer> filmsRentalIds;  // IDs du rental API (pour appeler DELETE /cart/{rentalId})
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,10 +40,14 @@ public class PanierActivity extends AppCompatActivity {
         buttonValiderPanier = findViewById(R.id.buttonValiderPanier);
         buttonViderPanier = findViewById(R.id.buttonViderPanier);
 
+        findViewById(R.id.buttonFermer).setOnClickListener(v -> finishAffinity());
+
+
         // Initialiser les ArrayLists
         filmsTitres = new ArrayList<>();
         filmsIds = new ArrayList<>();
         filmsPanierIds = new ArrayList<>();
+        filmsRentalIds = new ArrayList<>();
 
         // Charger les films du panier depuis SQLite
         chargerPanier();
@@ -92,6 +97,7 @@ public class PanierActivity extends AppCompatActivity {
             String[] columns = {
                     PanierDatabaseHelper.COLUMN_ID,
                     PanierDatabaseHelper.COLUMN_FILM_ID,
+                    PanierDatabaseHelper.COLUMN_RENTAL_ID,
                     PanierDatabaseHelper.COLUMN_TITLE,
                     PanierDatabaseHelper.COLUMN_YEAR,
                     PanierDatabaseHelper.COLUMN_LENGTH
@@ -112,6 +118,7 @@ public class PanierActivity extends AppCompatActivity {
             filmsTitres.clear();
             filmsIds.clear();
             filmsPanierIds.clear();
+            filmsRentalIds.clear();
 
             // Parcourir les résultats avec le Cursor
             if (cursor.moveToFirst()) {
@@ -119,6 +126,7 @@ public class PanierActivity extends AppCompatActivity {
                     // Récupérer les données de chaque film
                     int panierId = cursor.getInt(cursor.getColumnIndexOrThrow(PanierDatabaseHelper.COLUMN_ID));
                     int filmId = cursor.getInt(cursor.getColumnIndexOrThrow(PanierDatabaseHelper.COLUMN_FILM_ID));
+                    int rentalId = cursor.getInt(cursor.getColumnIndexOrThrow(PanierDatabaseHelper.COLUMN_RENTAL_ID));
                     String title = cursor.getString(cursor.getColumnIndexOrThrow(PanierDatabaseHelper.COLUMN_TITLE));
                     int year = cursor.getInt(cursor.getColumnIndexOrThrow(PanierDatabaseHelper.COLUMN_YEAR));
                     int length = cursor.getInt(cursor.getColumnIndexOrThrow(PanierDatabaseHelper.COLUMN_LENGTH));
@@ -127,6 +135,7 @@ public class PanierActivity extends AppCompatActivity {
                     filmsTitres.add(title + " (" + year + ") - " + length + " min");
                     filmsIds.add(filmId);
                     filmsPanierIds.add(panierId);
+                    filmsRentalIds.add(rentalId);
 
                     Log.d("mydebug", "Film chargé du panier: " + title);
                 } while (cursor.moveToNext());
@@ -197,11 +206,22 @@ public class PanierActivity extends AppCompatActivity {
     }
 
     /**
-     * Supprimer un film du panier
+     * Supprimer un film du panier : appelle d'abord l'API, puis supprime de SQLite
      */
     private void supprimerFilmDuPanier(int position) {
-        // Vérifier que le panier n'est pas vide
         if (position >= filmsPanierIds.size() || filmsTitres.get(position).equals("Panier vide")) {
+            return;
+        }
+        int rentalId = filmsRentalIds.get(position);
+        new SupprimerDuPanierTask(this, position).execute(rentalId);
+    }
+
+    /**
+     * Callback appelé par SupprimerDuPanierTask après l'appel API
+     */
+    public void onFilmSupprimeDuPanier(boolean succes, int position) {
+        if (!succes) {
+            Toast.makeText(this, "Erreur lors de la suppression", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -211,11 +231,9 @@ public class PanierActivity extends AppCompatActivity {
         try {
             int panierId = filmsPanierIds.get(position);
 
-            // Ouvrir la base en écriture
             dbHelper = new PanierDatabaseHelper(this);
             database = dbHelper.getWritableDatabase();
 
-            // Supprimer le film
             int rowsDeleted = database.delete(
                     PanierDatabaseHelper.TABLE_PANIER,
                     PanierDatabaseHelper.COLUMN_ID + " = ?",
@@ -225,12 +243,11 @@ public class PanierActivity extends AppCompatActivity {
             if (rowsDeleted > 0) {
                 Log.d("mydebug", "Film supprimé du panier");
                 Toast.makeText(this, "Film supprimé du panier", Toast.LENGTH_SHORT).show();
-                // Recharger le panier
                 chargerPanier();
             }
 
         } catch (Exception e) {
-            Log.e("mydebug", "Erreur lors de la suppression: " + e.toString());
+            Log.e("mydebug", "Erreur SQLite suppression: " + e.toString());
             Toast.makeText(this, "Erreur lors de la suppression", Toast.LENGTH_SHORT).show();
         } finally {
             if (dbHelper != null) {
@@ -240,30 +257,40 @@ public class PanierActivity extends AppCompatActivity {
     }
 
     /**
-     * Vider complètement le panier
+     * Vider complètement le panier : appelle l'API puis vide SQLite
      */
     private void viderPanier() {
+        if (filmsIds.isEmpty()) {
+            Toast.makeText(this, "Le panier est déjà vide", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        int customerId = 1;
+        new ViderPanierApiTask(this).execute(customerId);
+    }
+
+    /**
+     * Callback appelé par ViderPanierApiTask après l'appel API
+     */
+    public void onPanierVide(boolean succes) {
+        if (!succes) {
+            Toast.makeText(this, "Erreur lors du vidage du panier", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         SQLiteDatabase database = null;
         PanierDatabaseHelper dbHelper = null;
 
         try {
-            // Ouvrir la base en écriture
             dbHelper = new PanierDatabaseHelper(this);
             database = dbHelper.getWritableDatabase();
+            database.delete(PanierDatabaseHelper.TABLE_PANIER, null, null);
 
-            // Supprimer tous les films
-            int rowsDeleted = database.delete(PanierDatabaseHelper.TABLE_PANIER, null, null);
-
-            if (rowsDeleted > 0) {
-                Log.d("mydebug", "Panier vidé: " + rowsDeleted + " film(s) supprimé(s)");
-                Toast.makeText(this, "Panier vidé !", Toast.LENGTH_SHORT).show();
-                chargerPanier();
-            } else {
-                Toast.makeText(this, "Le panier est déjà vide", Toast.LENGTH_SHORT).show();
-            }
+            Log.d("mydebug", "Panier vidé");
+            Toast.makeText(this, "Panier vidé !", Toast.LENGTH_SHORT).show();
+            chargerPanier();
 
         } catch (Exception e) {
-            Log.e("mydebug", "Erreur lors du vidage du panier: " + e.toString());
+            Log.e("mydebug", "Erreur SQLite vidage: " + e.toString());
             Toast.makeText(this, "Erreur lors du vidage du panier", Toast.LENGTH_SHORT).show();
         } finally {
             if (dbHelper != null) {

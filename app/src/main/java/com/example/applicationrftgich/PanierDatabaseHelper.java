@@ -16,19 +16,21 @@ public class PanierDatabaseHelper extends SQLiteOpenHelper {
     // Colonnes de la table
     public static final String COLUMN_ID = "_id";
     public static final String COLUMN_FILM_ID = "film_id";
+    public static final String COLUMN_RENTAL_ID = "rental_id";
     public static final String COLUMN_TITLE = "title";
     public static final String COLUMN_YEAR = "year";
     public static final String COLUMN_LENGTH = "length";
 
     // Nom et version de la base de données
     private static final String DATABASE_NAME = "panier.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Commande SQL pour la création de la table
     private static final String DATABASE_CREATE = "create table "
             + TABLE_PANIER + "("
             + COLUMN_ID + " integer primary key autoincrement, "
             + COLUMN_FILM_ID + " integer not null, "
+            + COLUMN_RENTAL_ID + " integer not null, "
             + COLUMN_TITLE + " text not null, "
             + COLUMN_YEAR + " integer not null, "
             + COLUMN_LENGTH + " integer not null);";

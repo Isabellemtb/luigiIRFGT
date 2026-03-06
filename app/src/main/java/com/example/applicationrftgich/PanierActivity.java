@@ -40,6 +40,7 @@ public class PanierActivity extends AppCompatActivity {
         buttonValiderPanier = findViewById(R.id.buttonValiderPanier);
         buttonViderPanier = findViewById(R.id.buttonViderPanier);
 
+        findViewById(R.id.buttonRetour).setOnClickListener(v -> finish());
         findViewById(R.id.buttonFermer).setOnClickListener(v -> finishAffinity());
 
 

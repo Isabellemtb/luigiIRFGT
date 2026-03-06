@@ -9,7 +9,7 @@
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/ic_channel"
-        android:label="ICH_RFTG"
+        android:label="RFTG_Chlodnicki_Isabelle"
         android:roundIcon="@mipmap/ic_channel"
         android:supportsRtl="true"
         android:theme="@style/Theme.applicationrftgich"

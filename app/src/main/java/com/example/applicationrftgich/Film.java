@@ -3,11 +3,11 @@ package com.example.applicationrftgich;
 import java.util.List;
 
 public class Film {
+
     private int filmId;
     private String title;
     private String description;
     private int releaseYear;
-    private Integer originalLanguageId;
     private int rentalDuration;
     private double rentalRate;
     private int length;
@@ -31,9 +31,6 @@ public class Film {
 
     public int getReleaseYear() { return releaseYear; }
     public void setReleaseYear(int releaseYear) { this.releaseYear = releaseYear; }
-
-    public Integer getOriginalLanguageId() { return originalLanguageId; }
-    public void setOriginalLanguageId(Integer originalLanguageId) { this.originalLanguageId = originalLanguageId; }
 
     public int getRentalDuration() { return rentalDuration; }
     public void setRentalDuration(int rentalDuration) { this.rentalDuration = rentalDuration; }

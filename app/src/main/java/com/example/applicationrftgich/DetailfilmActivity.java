@@ -3,13 +3,17 @@ package com.example.applicationrftgich;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.util.Log;
 import com.google.gson.Gson;
+import java.io.BufferedInputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -25,7 +29,6 @@ public class DetailfilmActivity extends AppCompatActivity {
     private TextView textViewDescription;
     private TextView textViewYear;
     private TextView textViewLength;
-    private TextView textViewLanguage;
     private TextView textViewDirectors;
     private TextView textViewActors;
     private TextView textViewCategories;
@@ -47,12 +50,12 @@ public class DetailfilmActivity extends AppCompatActivity {
         textViewDescription = findViewById(R.id.textViewDescription);
         textViewYear = findViewById(R.id.textViewYear);
         textViewLength = findViewById(R.id.textViewLength);
-        textViewLanguage = findViewById(R.id.textViewLanguage);
         textViewDirectors = findViewById(R.id.textViewDirectors);
         textViewActors = findViewById(R.id.textViewActors);
         textViewCategories = findViewById(R.id.textViewCategories);
         buttonAddToCart = findViewById(R.id.buttonAddToCart);
 
+        findViewById(R.id.buttonRetour).setOnClickListener(v -> finish());
         findViewById(R.id.buttonFermer).setOnClickListener(v -> finishAffinity());
 
 
@@ -174,7 +177,6 @@ public class DetailfilmActivity extends AppCompatActivity {
             textViewDescription.setText(film.getDescription());
             textViewYear.setText("Année : " + film.getReleaseYear());
             textViewLength.setText("Durée : " + film.getLength() + " minutes");
-            textViewLanguage.setText("Langue : " + getLanguageName(film.getOriginalLanguageId()));
 
             // Afficher les réalisateurs
             if (film.getDirectors() != null && !film.getDirectors().isEmpty()) {
@@ -231,6 +233,11 @@ public class DetailfilmActivity extends AppCompatActivity {
 
             Log.d("mydebug", "Film affiché avec succès");
 
+            // Désactiver le bouton et vérifier la disponibilité
+            buttonAddToCart.setEnabled(false);
+            buttonAddToCart.setText("Vérification...");
+            verifierDisponibilite();
+
         } catch (Exception e) {
             Log.e("mydebug", "ERREUR parsing JSON : " + e.toString());
             e.printStackTrace();
@@ -239,19 +246,47 @@ public class DetailfilmActivity extends AppCompatActivity {
     }
 
     /**
-     * Convertit l'ID de la langue en nom de langue
+     * Vérifie la disponibilité du film et active/désactive le bouton en conséquence
      */
-    private String getLanguageName(Integer languageId) {
-        if (languageId == null) return "Non disponible";
+    @SuppressWarnings("deprecation")
+    private void verifierDisponibilite() {
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                try {
+                    URL url = new URL(UrlManager.getURLConnexion() + "/cart/available/" + filmId);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setRequestMethod("GET");
+                    conn.setRequestProperty("Accept", "application/json");
+                    conn.setRequestProperty("Authorization", "Bearer " + getString(R.string.jwt_token));
+                    int code = conn.getResponseCode();
+                    if (code == 200) {
+                        InputStream in = new BufferedInputStream(conn.getInputStream());
+                        StringBuilder sb = new StringBuilder();
+                        int c;
+                        while ((c = in.read()) != -1) sb.append((char) c);
+                        in.close();
+                        conn.disconnect();
+                        return !sb.toString().trim().equals("[]");
+                    }
+                    conn.disconnect();
+                } catch (Exception e) {
+                    Log.e("mydebug", "Erreur vérif dispo: " + e);
+                }
+                return false;
+            }
 
-        switch (languageId) {
-            case 1: return "English";
-            case 2: return "Italian";
-            case 3: return "Japanese";
-            case 4: return "Mandarin";
-            case 5: return "French";
-            case 6: return "German";
-            default: return "Langue ID: " + languageId;
-        }
+            @Override
+            protected void onPostExecute(Boolean disponible) {
+                if (disponible) {
+                    buttonAddToCart.setEnabled(true);
+                    buttonAddToCart.setText("Ajouter au panier");
+                } else {
+                    buttonAddToCart.setEnabled(false);
+                    buttonAddToCart.setText("Indisponible");
+                }
+            }
+        }.execute();
     }
+
 }

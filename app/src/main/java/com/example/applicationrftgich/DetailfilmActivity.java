@@ -91,8 +91,11 @@ public class DetailfilmActivity extends AppCompatActivity {
      * Ajoute le film au panier via l'API
      */
     private void ajouterAuPanier() {
-        // TODO: récupérer le vrai customerId stocké à la connexion
-        int customerId = 1;
+        int customerId = getSharedPreferences("user", MODE_PRIVATE).getInt("customerId", -1);
+        if (customerId == -1) {
+            Toast.makeText(this, "Erreur : non connecté", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Appeler l'API pour créer le Rental
         new AjouterAuPanierTask(this).execute(customerId, filmId);

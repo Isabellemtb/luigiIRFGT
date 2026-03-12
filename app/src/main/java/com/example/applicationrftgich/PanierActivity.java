@@ -265,7 +265,11 @@ public class PanierActivity extends AppCompatActivity {
             Toast.makeText(this, "Le panier est déjà vide", Toast.LENGTH_SHORT).show();
             return;
         }
-        int customerId = 1;
+        int customerId = getSharedPreferences("user", MODE_PRIVATE).getInt("customerId", -1);
+        if (customerId == -1) {
+            Toast.makeText(this, "Erreur : non connecté", Toast.LENGTH_SHORT).show();
+            return;
+        }
         new ViderPanierApiTask(this).execute(customerId);
     }
 
@@ -312,8 +316,11 @@ public class PanierActivity extends AppCompatActivity {
 
         Log.d("mydebug", "Validation du panier avec " + filmsIds.size() + " film(s)");
 
-        // Récupérer le customerId (TODO: récupérer le vrai customerId stocké à la connexion)
-        int customerId = 1;
+        int customerId = getSharedPreferences("user", MODE_PRIVATE).getInt("customerId", -1);
+        if (customerId == -1) {
+            Toast.makeText(this, "Erreur : non connecté", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         // Appeler l'API pour valider
         new ValiderPanierTask(this).execute(customerId);

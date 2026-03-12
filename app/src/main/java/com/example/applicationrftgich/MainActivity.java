@@ -90,6 +90,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             int customerId = jsonResponse.getInt("customerId");
 
             if (customerId > 0) {
+                getSharedPreferences("user", MODE_PRIVATE)
+                        .edit().putInt("customerId", customerId).apply();
                 Toast.makeText(this, "Connexion réussie !", Toast.LENGTH_SHORT).show();
                 ouvrirPage(null);
             } else {
